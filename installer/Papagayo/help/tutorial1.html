@@ -1,0 +1,102 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>Tutorial 1</title>
+	<link rel=stylesheet type="text/css" href="papagayo.css">
+</head>
+<body>
+
+<h1>Tutorial 1</h1>
+
+<p class=indented>
+In this tutorial we will show the basics of using Papagayo to lip-sync a sound file. The finished project is called "vista.pgo" and is available in Papagayo's "Tutorial Files" folder for you to examine, but we'll be starting off with a plain sound file.
+
+<h2>Step 1 - Load a sound file</h2>
+
+<p class=indented>
+The first step is to load the sound file you want to use. Select the File->Open menu command (or use the toolbar button), and select the file "vista.wav", located in Papagayo's "Tutorial Files" folder.
+
+<center><img src="img/tut1/01.png"></center>
+
+<p class=indented>
+Once the audio waveform appears in the Papagayo window, you can use the Play and Stop buttons in the toolbar to listen to it if you want. You can also "scrub" through the audio by dragging the mouse back and forth along the waveform. At this point, the mouth displayed on the right side of the window will not move with the audio.
+
+<p class=indented>
+The other thing you should do at this point is set the frame rate of your animation. You can do this at the top-right of the Papagayo window. We're just going to stick with 24 frames per second for this example, so you can leave that number alone.
+
+<h2>Step 2 - Enter the spoken text</h2>
+
+<p class=indented>
+Now we'll enter the text that is being spoken, and let Papagayo break it down into phonemes. Enter the following text into the "Spoken text" field in Papagayo. You can also enter a name for the voice if you wish (this would be more important for sound clips with multiple actors speaking).
+
+<center><img src="img/tut1/02.png"></center>
+
+<p class=indented>
+Papagayo will break words down into phonemes as you type them in, but you can also press the "Breakdown" button to make Papagayo re-do the phonetic breakdown. These will be displayed on top of the waveform as shown above. Try playing back the sound again. Now that Papagayo knows the words being spoken, you will see the mouth move as the sound plays back. However, the mouth doesn't really move correctly yet. In the next steps, we'll align the words with the sounds.
+
+<p class=indented>
+<b><i>Note:</i></b> You should not press the "Breakdown" button more than once, unless you've changed the spoken text. The reason is that the automatic breakdown will re-align all your words, discarding any manual alignment you've performed. Only do a new breakdown if you have to make changes to the text you entered.
+
+<p class=indented>
+(Using the popup menu above the mouth display, you can select different mouth shapes to view along with the sound. The mouth shapes in Papagayo are just for illustration purposes and aren't necessarily what the mouth in your final animation will look like.)
+
+<h2>Step 3 - Align phrases</h2>
+
+<p class=indented>
+It's time to start lining up the words with the sounds. In Papagayo, you should always work from the top downwards. First align phrases, then align words, and finally align phonemes. This breaks down the process into manageable chunks.
+
+<p class=indented>
+In this short example, there's only one phrase, "Hasta la vista, baby." This phrase is displayed in the waveform view inside a green rectangle at the top of the waveform. At both the beginning and the end of the sound clip, there is silence. What we need to do in this step is align the phrase so that it just overlaps the actual spoken words in the sound clip.
+
+<p class=indented>
+To do this, first drag the left end of the phrase to the right a little bit. Then, drag the right end of the phrase towards the left a bit. Are you drag the ends of the phrase, you will hear the audio that corresponds to the frame you are dragging your mouse over. By dragging side to side a bit, you can find the spot where the speech begins (on the left), and where it ends (on the right). Align the phrase to cover just this area of audible speech.
+
+<center><img src="img/tut1/03.png"></center>
+
+<p class=indented>
+When you think the phrase is lined up correctly, you can try double-clicking on its green rectangle to play back just that section of audio.
+
+<h2>Step 4 - Align words</h2>
+
+<p class=indented>
+Once a phrase is lined up, we can work our way downwards and line up the words that make up the phrase. You move words the same way as phrases. Drag the left and right ends of a word to line them up with the correct section of audio. Just like phrases, you can double-click a word to hear it played back and watch the mouth move with it. Here's how the words should be arranged in this example:
+
+<center><img src="img/tut1/04.png"></center>
+
+<p class=indented>
+Notice the gap between "vista" and "baby". This corresponds to a pause in the spoken audio. There's no reason words have to line up so that they touch - feel free to separate them as needed.
+
+<p class=indented>
+Try playing back the entire sound clip using the Play button in the toolbar. At this point things should be looking pretty good, and really without all that much work.
+
+<h2>Step 5 - Align phonemes</h2>
+
+<p class=indented>
+After adjusting the words, you can work your way down and adjust the individual phonemes if you want/need to. The phonemes that make up the individual words are displayed as little rectangles at the bottom of the timeline - you can easily drag them from side to side.
+
+<p class=indented>
+The good news is that, in many cases, you can stop after adjusting the words. As you adjust phrases, Papagayo automatically adjusts words, and as you adjust words, Papagayo automatically adjusts phonemes. This means that the phonemes are often in the correct locations (or close enough) automatically, and you don't need to adjust them individually. Or, you may need to adjust just a few here and there. (This is also the reason you work from the top down in Papagayo - first adjust phrases, then words, then phonemes.)
+
+<p class=indented>
+In this case, the phonemes are well aligned and we don't need to tweak them individually.
+
+<h2>Step 6 - Export to Anime Studio</h2>
+
+<p class=indented>
+At this point, the lip-sync process is done, and you can export the result for use with Anime Studio. Click on the "Export Voice" button to export the lip-sync data as a switch data file for use in Anime Studio. To use the resulting switch data in Anime Studio, first load up a mouth switch layer in Anime Studio that is set up to use the Preston Blair phoneme set. (Some example mouths are included with Papagayo.) Double-click the mouth switch layer and go to the Switch tab of the Layer Settings dialog to assign a switch data file. You can then select the switch data you just exported from Papagayo. Finally, import the audio file into the project and play back the animation.
+
+<center>
+<p>
+<video controls>
+	<source src="img/tut1/result.mp4" type="video/mp4">
+	Your browser does not support the video tag.
+</video>
+</center>
+
+<div id=copyright>
+&copy; 2005-2014 <a href="mailto:webmaster@lostmarble.com">Mike Clifton</a>. All Rights Reserved.
+</div>
+
+</body>
+</html>

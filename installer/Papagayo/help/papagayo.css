@@ -1,0 +1,49 @@
+body {
+	background: #F1F5F7;
+	color: #000000;
+
+	font-family: Arial, Verdana, Helvetica, sans-serif;
+	font-size: 12px;
+}
+
+hr {
+	clear: both;
+	visibility: hidden;
+}
+
+h1, h2 {
+	font-variant: small-caps;
+}
+
+h1 {
+	font-size: 24px;
+	text-align: center;
+}
+
+h2 {
+	font-size: 16px;
+}
+
+a {
+	color: #1148AB;
+}
+
+a:hover {
+	color: #AB1152;
+}
+
+img {
+	border: 0;
+	vertical-align: middle;
+}
+
+p.indented {
+	text-indent: 1em;
+	text-align: justify;
+}
+
+div#copyright {
+	font-size: 10px;
+	font-style: italic;
+	text-align: right;
+}

@@ -1,0 +1,100 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>Tutorial 2</title>
+	<link rel=stylesheet type="text/css" href="papagayo.css">
+</head>
+<body>
+
+<h1>Tutorial 2</h1>
+
+<p class=indented>
+One of the benefits of Papagayo is that it can easily lip-sync sound files with multiple actors speaking, something that can be difficult using other lip-sync approaches. We're going to start with a plain sound file again, but if you want to see the finished result, the file is called "scared.pgo" and is available in Papagayo's "Tutorial Files" folder.
+
+<h2>Step 1 - Load a sound file</h2>
+
+<p class=indented>
+Select the File->Open menu command (or use the toolbar button), and select the file "scared.wav", located in Papagayo's "Tutorial Files" folder.
+
+<center><img src="img/tut2/01.png"></center>
+
+<p class=indented>
+If you play back this file, you'll hear two actors speaking. The process for lip-syncing multiple actors is exactly the same as for a single one. We just need to enter them into Papagayo as separate voices.
+
+<h2>Step 2 - Enter the first voice</h2>
+
+<p class=indented>
+In the "Spoken text" box, enter (or copy/paste) the following text:
+
+<pre>
+Chris, I'm scared to death.
+I don't think I have that particular neurotransmitter.
+</pre>
+
+<p class=indented>
+Be sure that the two sentences are entered on separate lines by pressing the Enter key between them. This separation tells Papagayo that the two sentences are separate phrases. This will make it easier to have a second person speaking in between. Enter "Ross" as the voice name and click "Breakdown":
+
+<center><img src="img/tut2/02.png"></center>
+
+<p class=indented>
+We're not going to worry about alignment just yet. Before we get to that, let's enter the second speaking voice.
+
+<h2>Step 3 - Enter the second voice</h2>
+
+<p class=indented>
+Press the New button (underneath the voice list) to create a new voice in this project. Name the second voice "Chris", and enter the following "Spoken text" for the new voice:
+
+<pre>
+Yeah, we all are.
+But our brains secrete a neurotransmitter that enables us to deal with them.
+Come on.
+</pre>
+
+<p class=indented>
+Notice that again I entered the text on multiple lines. This is because there are pauses between each phrase. Breaking up a voice into multiple phrases makes alignment easier as you'll see soon.
+
+<p class=indented>
+Click "Breakdown" for this second voice, and you should now have two voices in the project:
+
+<center><img src="img/tut2/03.png"></center>
+
+<h2>Step 4 - Phrase and word alignment</h2>
+
+<p class=indented>
+Now it's time to align the phrases with the underlying sound. Papagayo only displays the phrases and words for the currently selected voice (as shown in the voice list). Working first on the Ross voice, align the phrases to match up with the actual sounds. Ross speaks two separate lines, and they are quite spaced apart. It may help to click the Zoom Out button to see more of the audio at once. His first line appears like this:
+
+<center><img src="img/tut2/04.png"></center>
+
+<p class=indented>
+And his second line is way at the end of the audio:
+
+<center><img src="img/tut2/05.png"></center>
+
+<p class=indented>
+Next, line up the phrases for the Chris voice - there are three of them. Chris's phrases are all near the middle of the sound clip:
+
+<center><img src="img/tut2/06.png"></center>
+
+<p class=indented>
+Once you have the phrases lined up, you can go in and adjust the individual words that make up the phrases. Do this for each voice, just like you did in Tutorial 1.
+
+<h2>Step 5 - Export to Anime Studio</h2>
+
+<p class=indented>
+Once the phrases and words are lined up for both voices, we can export the result and bring it into Anime Studio. You have to export each voice as a separate switch data file for Anime Studio to use. Select each voice and click the "Export Voice" button. Then, in Anime Studio, load up two mouth switch layers, and assign one of the switch data files to each voice. Finally, import the audio file into Anime Studio and play back the animation.
+
+<center>
+<p>
+<video controls>
+	<source src="img/tut2/result.mp4" type="video/mp4">
+	Your browser does not support the video tag.
+</video>
+</center>
+
+<div id=copyright>
+&copy; 2005-2014 <a href="mailto:webmaster@lostmarble.com">Mike Clifton</a>. All Rights Reserved.
+</div>
+
+</body>
+</html>

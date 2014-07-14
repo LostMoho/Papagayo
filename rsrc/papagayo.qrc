@@ -1,0 +1,62 @@
+<RCC>
+    <qresource prefix="/images">
+        <file>images/open.png</file>
+        <file>images/play.png</file>
+        <file>images/save.png</file>
+        <file>images/stop.png</file>
+        <file>images/window_icon.bmp</file>
+        <file>images/zoom_1.png</file>
+        <file>images/zoom_in.png</file>
+        <file>images/zoom_out.png</file>
+        <file>images/papagayo.png</file>
+    </qresource>
+    <qresource prefix="/dictionaries">
+        <file>dictionaries/extended_dictionary</file>
+        <file>dictionaries/standard_dictionary</file>
+        <file>dictionaries/user_dictionary</file>
+        <file>dictionaries/phoneme_mapping</file>
+    </qresource>
+    <qresource prefix="/mouths">
+        <file>mouths/1_Mouth_1/AI.jpg</file>
+        <file>mouths/1_Mouth_1/E.jpg</file>
+        <file>mouths/1_Mouth_1/etc.jpg</file>
+        <file>mouths/1_Mouth_1/FV.jpg</file>
+        <file>mouths/1_Mouth_1/L.jpg</file>
+        <file>mouths/1_Mouth_1/MBP.jpg</file>
+        <file>mouths/1_Mouth_1/O.jpg</file>
+        <file>mouths/1_Mouth_1/rest.jpg</file>
+        <file>mouths/1_Mouth_1/U.jpg</file>
+        <file>mouths/1_Mouth_1/WQ.jpg</file>
+        <file>mouths/2_Mouth_2/AI.jpg</file>
+        <file>mouths/2_Mouth_2/E.jpg</file>
+        <file>mouths/2_Mouth_2/etc.jpg</file>
+        <file>mouths/2_Mouth_2/FV.jpg</file>
+        <file>mouths/2_Mouth_2/L.jpg</file>
+        <file>mouths/2_Mouth_2/MBP.jpg</file>
+        <file>mouths/2_Mouth_2/O.jpg</file>
+        <file>mouths/2_Mouth_2/rest.jpg</file>
+        <file>mouths/2_Mouth_2/U.jpg</file>
+        <file>mouths/2_Mouth_2/WQ.jpg</file>
+        <file>mouths/3_Gary_C_Martin/AI.jpg</file>
+        <file>mouths/3_Gary_C_Martin/E.jpg</file>
+        <file>mouths/3_Gary_C_Martin/etc.jpg</file>
+        <file>mouths/3_Gary_C_Martin/FV.jpg</file>
+        <file>mouths/3_Gary_C_Martin/L.jpg</file>
+        <file>mouths/3_Gary_C_Martin/MBP.jpg</file>
+        <file>mouths/3_Gary_C_Martin/O.jpg</file>
+        <file>mouths/3_Gary_C_Martin/rest.jpg</file>
+        <file>mouths/3_Gary_C_Martin/U.jpg</file>
+        <file>mouths/3_Gary_C_Martin/WQ.jpg</file>
+        <file>mouths/4_Preston_Blair/AI.jpg</file>
+        <file>mouths/4_Preston_Blair/E.jpg</file>
+        <file>mouths/4_Preston_Blair/etc.jpg</file>
+        <file>mouths/4_Preston_Blair/FV.jpg</file>
+        <file>mouths/4_Preston_Blair/L.jpg</file>
+        <file>mouths/4_Preston_Blair/MBP.jpg</file>
+        <file>mouths/4_Preston_Blair/O.jpg</file>
+        <file>mouths/4_Preston_Blair/rest.jpg</file>
+        <file>mouths/4_Preston_Blair/U.jpg</file>
+        <file>mouths/4_Preston_Blair/WQ.jpg</file>
+    </qresource>
+    <qresource prefix="/"/>
+</RCC>

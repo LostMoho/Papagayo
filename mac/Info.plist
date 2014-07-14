@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>English</string>
+	<key>CFBundleDocumentTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>pgo</string>
+			</array>
+			<key>CFBundleTypeIconFile</key>
+			<string>papagayo_doc.icns</string>
+			<key>CFBundleTypeMIMETypes</key>
+			<array>
+				<string>application/x-vnd.lm_papagayodoc</string>
+			</array>
+			<key>CFBundleTypeName</key>
+			<string>Papagayo Document</string>
+			<key>CFBundleTypeOSTypes</key>
+			<array>
+				<string>PgyO</string>
+			</array>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+		</dict>
+	</array>
+	<key>CFBundleExecutable</key>
+	<string>Papagayo</string>
+	<key>CFBundleIconFile</key>
+	<string>papagayo.icns</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.lostmarble.Papagayo</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>Papagayo</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersion</key>
+	<string>2.0b1</string>
+	<key>CFBundleShortVersionString</key>
+	<string>2.0b1</string>
+	<key>CFBundleSignature</key>
+	<string>????</string>
+	<key>CFBundleVersion</key>
+	<string>2.0b1</string>
+	<key>NSPrincipalClass</key>
+	<string>NSApplication</string>
+	<key>CFBundleGetInfoString</key>
+	<string>Papagayo version 2.0b1, Copyright 2005-2014 Mike Clifton</string>
+</dict>
+</plist>
