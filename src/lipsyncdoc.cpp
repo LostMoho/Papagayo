@@ -286,6 +286,129 @@ void LipsyncVoice::Export(QString path)
 	out << endFrame + 2 << ' ' << "rest" << endl;
 }
 
+ void LipsyncVoice::ExportSpine(QString path)
+ {
+     QFile	f(path);
+
+
+     if (!f.open(QIODevice::WriteOnly | QIODevice::Text))
+         return;
+
+     QTextStream out(&f);
+
+     //useful variables
+     int        fps = 30;
+     int		startFrame = 0;
+     int		endFrame = 1;
+     int        width = 200;
+     int        height = 200;
+     char* hash = "KebD3MyURSyaMpyRinWkDQEAuYk";
+     double time = 0.0;
+     QString	phoneme, nextPhoneme;
+
+     //get the start and end frames
+     if (fPhrases.size() > 0)
+     {
+         startFrame = fPhrases[0]->fStartFrame;
+         endFrame = fPhrases.last()->fEndFrame;
+     }
+
+
+    //create skeleton @TODO: Figure out what "hash" does and ensure that is set up how it's supposed to work
+    QString skeleton = "\"skeleton\": {\n\t\"hash\": \"";
+    skeleton.append(hash);
+    skeleton.append("\",\n\t\"spine\": \"2.1.27\",\n");
+    skeleton.append(QString("\t\"width\": %1,\n").arg(width));
+    skeleton.append(QString("\t\"height\": %1,\n},\n").arg(height));
+
+    //create bones
+    QString bones = "\"bones\": [\n\t{ \"name\": \"root\" }\n],\n";
+    //create slots
+    QString slot = "\"slots\": [\n\t{ \"name\": \"Mouthshape\", \"bone\": \"root\", \"attachment\": \"rest\" }\n],\n";
+    //create skins
+    QString skins = "\"skins\": {\n\t\"default\": {\n\t\t\"Mouthshape\": {\n";
+        skins.append(QString("\t\t\t\"AI\": { \"width\":%1").arg(width));
+        skins.append(QString(" , \"height\": %1 },\n").arg(height));
+
+        skins.append(QString("\t\t\t\"E\": { \"width\":%1").arg(width));
+        skins.append(QString(" , \"height\": %1 },\n").arg(height));
+
+        skins.append(QString("\t\t\t\"FV\": { \"width\":%1").arg(width));
+        skins.append(QString(" , \"height\": %1 },\n").arg(height));
+
+        skins.append(QString("\t\t\t\"L\": { \"width\":%1").arg(width));
+        skins.append(QString(" , \"height\": %1 },\n").arg(height));
+
+        skins.append(QString("\t\t\t\"MBP\": { \"width\":%1").arg(width));
+        skins.append(QString(" , \"height\": %1 },\n").arg(height));
+
+        skins.append(QString("\t\t\t\"O\": { \"width\":%1").arg(width));
+        skins.append(QString(" , \"height\": %1 },\n").arg(height));
+
+        skins.append(QString("\t\t\t\"U\": { \"width\":%1").arg(width));
+        skins.append(QString(" , \"height\": %1 },\n").arg(height));
+
+        skins.append(QString("\t\t\t\"WQ\": { \"width\":%1").arg(width));
+        skins.append(QString(" , \"height\": %1 },\n").arg(height));
+
+        skins.append(QString("\t\t\t\"etc\": { \"width\":%1").arg(width));
+        skins.append(QString(" , \"height\": %1 },\n").arg(height));
+
+        skins.append(QString("\t\t\t\"rest\": { \"width\":%1").arg(width));
+        skins.append(QString(" , \"height\": %1 },\n").arg(height));
+
+    skins.append("\t\t}\n\t}\n},\n");
+    //create animations
+    QString animations = "\"animations\": {\n\t\"animation\": {\n\t\t\"slots\": {\n\t\t\t\"Mouthshape\": {\n\t\t\t\t\"attachment\": [\n";
+
+
+    /*if (startFrame > 1)
+    {
+        phoneme = "rest";
+        out << 1 << ' ' << "rest" << endl;
+    }*/
+
+    for (int frame = startFrame; frame <= endFrame; frame++)
+    {
+        nextPhoneme = GetPhonemeAtFrame(frame);
+
+        //qDebug()<<"time is "<<time;
+        if (nextPhoneme != phoneme)
+        {
+            time = (double)(frame)/(double)fps;
+            if (phoneme == "rest")
+            { // export an extra "rest" phoneme at the end of a pause between words or phrases
+                animations.append("\t\t\t\t\t{ \"time\": ");
+                animations.append(QString("%1").arg(time, 0, 'g', 5));
+                animations.append(", \"name\": \"");
+                animations.append(phoneme);
+                animations.append("\" },\n");
+
+            }
+            phoneme = nextPhoneme;
+
+            animations.append("\t\t\t\t\t{ \"time\": ");
+            animations.append(QString("%1").arg(time, 0, 'g', 5));
+            animations.append(", \"name\": \"");
+            animations.append(phoneme);
+            animations.append("\" },\n");
+        }
+    }
+
+    animations.append("\t\t\t\t]\n\t\t\t}\n\t\t}\n\t}\n}");
+
+    //write to file
+
+    out<<"{\n";
+    out<<skeleton;
+    out<<bones;
+    out<<slot;
+    out<<skins;
+    out<<animations;
+    out<<"\n}";
+
+ }
+
 void LipsyncVoice::RunBreakdown(QString language, int32 audioDuration)
 {
 	// make sure there is a space after all punctuation marks
@@ -629,7 +752,7 @@ void LipsyncDoc::Open(const QString &path)
 	}
 	fAudioPath = tempPath;
 
-	fFps = in.readLine().toInt();
+    fFps = in.readLine().toInt();
 	fFps = PG_CLAMP(fFps, 1, 120);
 	fAudioDuration = in.readLine().toInt();
 

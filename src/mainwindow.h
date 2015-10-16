@@ -49,6 +49,8 @@ private slots:
 	void onVoiceTextChanged();
 	void onBreakdown();
 	void onExport();
+    void exportAnimeStudio();
+    void exportSpine();
 
 private:
 	void RebuildVoiceList();

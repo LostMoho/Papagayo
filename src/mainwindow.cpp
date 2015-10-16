@@ -18,6 +18,8 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->waveformView->SetScrollArea(ui->scrollArea);
 	ui->fpsEdit->setValidator(new QIntValidator(1, 120));
 
+    ui->exportChoice->addItem("Spine");
+
 	connect(ui->actionZoomIn, SIGNAL(triggered()), ui->waveformView, SLOT(onZoomIn()));
 	connect(ui->actionZoomOut, SIGNAL(triggered()), ui->waveformView, SLOT(onZoomOut()));
 	connect(ui->actionAutoZoom, SIGNAL(triggered()), ui->waveformView, SLOT(onAutoZoom()));
@@ -471,23 +473,66 @@ void MainWindow::onBreakdown()
 
 void MainWindow::onExport()
 {
-	if (!fDoc || !fDoc->fCurrentVoice)
-		return;
+    if(ui->exportChoice->currentText() == "Anime Studio")
+        exportAnimeStudio();
+    else if(ui->exportChoice->currentText() == "Spine")
+        exportSpine();
 
-	QSettings settings;
-	QString name = fDoc->fCurrentVoice->fName + tr(".dat");
-	QDir dir(settings.value("default_dir", "").toString());
-	name = dir.absoluteFilePath(name);
-	QString filePath = QFileDialog::getSaveFileName(this,
-													tr("Export"), name,
-													tr("DAT files (*.dat)"));
-	if (filePath.isEmpty())
-		return;
+}
 
-	QFileInfo info(filePath);
-	settings.setValue("default_dir", info.dir().absolutePath());
+/**
+ * @brief MainWindow::ExportAnimeStudio
+ * Exports Anime studio format
+ */
+void MainWindow::exportAnimeStudio()
+{
 
-	fDoc->fCurrentVoice->Export(filePath);
+    if (!fDoc || !fDoc->fCurrentVoice)
+        return;
+
+    QSettings settings;
+    QString name = fDoc->fCurrentVoice->fName + tr(".dat");
+    QDir dir(settings.value("default_dir", "").toString());
+    name = dir.absoluteFilePath(name);
+    QString filePath = QFileDialog::getSaveFileName(this,
+                                                    tr("Export"), name,
+                                                    tr("DAT files (*.dat)"));
+    if (filePath.isEmpty())
+        return;
+
+    QFileInfo info(filePath);
+    settings.setValue("default_dir", info.dir().absolutePath());
+
+    fDoc->fCurrentVoice->Export(filePath);
+
+
+}
+
+
+/**
+ * @brief MainWindow::ExportSpine
+ * Exports spine json file.
+ */
+void MainWindow::exportSpine()
+{
+
+    if (!fDoc || !fDoc->fCurrentVoice)
+        return;
+
+    QSettings settings;
+    QString name = fDoc->fCurrentVoice->fName + tr(".json");
+    QDir dir(settings.value("default_dir", "").toString());
+    name = dir.absoluteFilePath(name);
+    QString filePath = QFileDialog::getSaveFileName(this,
+                                                    tr("Export"), name,
+                                                    tr("DAT files (*.json)"));
+    if (filePath.isEmpty())
+        return;
+
+    QFileInfo info(filePath);
+    settings.setValue("default_dir", info.dir().absolutePath());
+
+     fDoc->fCurrentVoice->ExportSpine(filePath);
 }
 
 void MainWindow::RebuildVoiceList()
