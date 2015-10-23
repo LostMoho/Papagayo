@@ -302,10 +302,10 @@ void LipsyncVoice::Export(QString path)
      int		endFrame = 1;
      int        width = 200;
      int        height = 200;
-     char* hash = "KebD3MyURSyaMpyRinWkDQEAuYk";
+     QString hash("KebD3MyURSyaMpyRinWkDQEAuYk");        //@TODO: make hash compute form phoneme/frame numbers
      double time = 0.0;
      QString	phoneme, nextPhoneme;
-
+     QString    word,   nextWord;
      //get the start and end frames
      if (fPhrases.size() > 0)
      {
@@ -314,7 +314,6 @@ void LipsyncVoice::Export(QString path)
      }
 
 
-    //create skeleton @TODO: Figure out what "hash" does and ensure that is set up how it's supposed to work
     QString skeleton = "\"skeleton\": {\n\t\"hash\": \"";
     skeleton.append(hash);
     skeleton.append("\",\n\t\"spine\": \"2.1.27\",\n");
@@ -360,8 +359,8 @@ void LipsyncVoice::Export(QString path)
     skins.append("\t\t}\n\t}\n},\n");
     //create animations
     QString animations = "\"animations\": {\n\t\"animation\": {\n\t\t\"slots\": {\n\t\t\t\"Mouthshape\": {\n\t\t\t\t\"attachment\": [\n";
-
-
+    QString events = "\"events\":{\n";
+    QString animEvents = "\t\t\"events\":[\n";
     /*if (startFrame > 1)
     {
         phoneme = "rest";
@@ -371,11 +370,28 @@ void LipsyncVoice::Export(QString path)
     for (int frame = startFrame; frame <= endFrame; frame++)
     {
         nextPhoneme = GetPhonemeAtFrame(frame);
+        nextWord = GetWordAtFrame(frame);
+        time = (double)(frame)/(double)fps;
 
-        //qDebug()<<"time is "<<time;
+        //if there is a new word, add it to the events and the animations lists
+        if(nextWord != word)
+        {
+            word = nextWord;
+            //add word to events list
+            events.append("\t\"");
+            events.append(word);
+            events.append("\":{},\n");
+
+            //add event to animaitons list
+            animEvents.append(QString("\t\t\t{\"time\":%1").arg(time, 0, 'g', 5));
+            animEvents.append(",\"name\":\"");
+            animEvents.append(word);
+            animEvents.append("\"},\n");
+        }
+
+        //if there is a new phoneme, add it
         if (nextPhoneme != phoneme)
         {
-            time = (double)(frame)/(double)fps;
             if (phoneme == "rest")
             { // export an extra "rest" phoneme at the end of a pause between words or phrases
                 animations.append("\t\t\t\t\t{ \"time\": ");
@@ -394,9 +410,11 @@ void LipsyncVoice::Export(QString path)
             animations.append("\" },\n");
         }
     }
-
-    animations.append("\t\t\t\t]\n\t\t\t}\n\t\t}\n\t}\n}");
-
+    animEvents.append("\t\t]\n");
+    animations.append("\t\t\t\t]\n\t\t\t}\n\t\t},\n");
+    animations.append(animEvents);
+    animations.append("\t}\n}");
+    events.append("},\n");
     //write to file
 
     out<<"{\n";
@@ -404,6 +422,7 @@ void LipsyncVoice::Export(QString path)
     out<<bones;
     out<<slot;
     out<<skins;
+    out<<events;
     out<<animations;
     out<<"\n}";
 
@@ -601,6 +620,35 @@ QString LipsyncVoice::GetPhonemeAtFrame(int32 frame)
 
 	return "rest";
 }
+
+
+/**
+ * @brief LipsyncVoice::GetPhonemeAtFrame Get's the word that is associated with a specific frame
+ * @param frame
+ * @return
+ */
+QString LipsyncVoice::GetWordAtFrame(int32 frame)
+{
+    for (int32 i = 0; i < fPhrases.size(); i++)
+    {
+        LipsyncPhrase *phrase = fPhrases[i];
+        if (frame >= phrase->fStartFrame && frame <= phrase->fEndFrame)
+        { // we found the phrase that contains this frame
+            for (int32 j = 0; j < phrase->fWords.size(); j++)
+            {
+                LipsyncWord *word = phrase->fWords[j];
+                if (frame >= word->fStartFrame && frame <= word->fEndFrame)
+                { // we found the word that contains this frame
+                   return word->fText;
+                }
+            }
+        }
+    }
+
+    return "";
+}
+
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

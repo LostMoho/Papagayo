@@ -69,6 +69,7 @@ public:
 	void RunBreakdown(QString language, int32 audioDuration);
 	void RepositionPhrase(LipsyncPhrase *phrase, int32 audioDuration);
 	QString GetPhonemeAtFrame(int32 frame);
+    QString GetWordAtFrame(int32 frame);
 
 	QString					fName;
 	QString					fText;
