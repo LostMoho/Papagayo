@@ -2,6 +2,7 @@
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "spinedialog.h"
 
 MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent),
@@ -269,7 +270,7 @@ void MainWindow::onFileOpen()
 		return;
 
 	QSettings settings;
-	QString filePath = QFileDialog::getOpenFileName(this,
+    QString filePath = QFileDialog::getOpenFileName(this,
 													tr("Open"), settings.value("default_dir", "").toString(),
 													tr("Papgayo and Audio files (*.pgo;*.wav;*.aif;*.aiff)"));
 	if (filePath.isEmpty())
@@ -519,20 +520,10 @@ void MainWindow::exportSpine()
     if (!fDoc || !fDoc->fCurrentVoice)
         return;
 
-    QSettings settings;
-    QString name = fDoc->fCurrentVoice->fName + tr(".json");
-    QDir dir(settings.value("default_dir", "").toString());
-    name = dir.absoluteFilePath(name);
-    QString filePath = QFileDialog::getSaveFileName(this,
-                                                    tr("Export"), name,
-                                                    tr("DAT files (*.json)"));
-    if (filePath.isEmpty())
-        return;
+    SpineDialog *dlog = new SpineDialog(fDoc, this);
+    dlog->exec() ;
+    delete dlog;
 
-    QFileInfo info(filePath);
-    settings.setValue("default_dir", info.dir().absolutePath());
-
-     fDoc->fCurrentVoice->ExportSpine(filePath);
 }
 
 void MainWindow::RebuildVoiceList()
