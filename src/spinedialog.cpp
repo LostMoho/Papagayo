@@ -49,17 +49,14 @@ void SpineDialog::LoadSpineFile()
         delete this->spineDoc;
         this->spineDoc = NULL;
     }
+    if(ui->boneTree->model() != NULL)
+        delete ui->boneTree->model();
+
     this->spineDoc = new SpineDoc(filePath);
+    QStandardItemModel* model = this->spineDoc->GetModel();
+    ui->boneTree->setModel(model);
 
-    this->GenerateBoneTree();
-}
 
-/**
- * @brief SpineDialog::GenerateBoneTree fills out the tree in the ui with bones from the spine doc
- * @param _doc
- */
-void SpineDialog::GenerateBoneTree()
-{
 
 }
 
@@ -88,7 +85,7 @@ void SpineDialog::ExportSpine()
         this->spineDoc = new SpineDoc(ui->xDimensions->value(), ui->yDimensions->value() );
 
     this->spineDoc->exportWords = ui->cbExportWords->isChecked();
-    this->spineDoc->AddVoice(this->doc->fCurrentVoice);
+    this->spineDoc->AddVoice(this->doc->fCurrentVoice, ui->boneTree->currentIndex().data().toString());
     this->spineDoc->Export(filePath);
 
 

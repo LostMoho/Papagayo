@@ -96,19 +96,16 @@ QString SpineDoc::JsonExport()
   * @param voice
   * @TODO: break down into several smaller methods
   */
- void SpineDoc::AddVoice(LipsyncVoice* voice)
+ void SpineDoc::AddVoice(LipsyncVoice* voice, QString parent = NULL)
  {
 
-      this->AddBones(); //add the head bone
-      this->AddSlots(); //add the animations slots
-      this->AddSkins(); //add the mouthshape skin
+
+     this->AddBones(parent); //add the head bone
+     this->AddSlots(); //add the animations slots               //problem in slots section
+     this->AddSkins(); //add the mouthshape skin
+     this->AddAnimations(voice); //add voice keyframes
      if(this->exportWords)         //if desired, export words as events
        this->AddWordEvents(voice);
-      this->AddAnimations(voice); //add voice keyframes
-
-
-
-
 
  }
 
@@ -116,13 +113,15 @@ QString SpineDoc::JsonExport()
  /**
   * @brief SpineDoc::AddBones sets up bones in the file
   */
- void SpineDoc::AddBones()
+ void SpineDoc::AddBones(QString parent = NULL)
  {
     Document::AllocatorType& allocator = this->spineData.GetAllocator();
 
     Value bones(kArrayType);
     Value rootBone(kObjectType);
-    rootBone.AddMember("name", "root", allocator);
+    rootBone.AddMember("name", "mouth", allocator);
+    if(parent != NULL)
+        rootBone.AddMember("parent", Value(parent.toStdString().c_str(), allocator).Move(), allocator);
 
     if(this->spineData.HasMember("bones"))
         this->spineData["bones"].PushBack(rootBone, allocator);
@@ -146,17 +145,19 @@ QString SpineDoc::JsonExport()
 
      Value mouthslot(kObjectType);
         mouthslot.AddMember("name", "MouthShape", allocator);
-        mouthslot.AddMember("bone", "root", allocator);
+        mouthslot.AddMember("bone", "mouth", allocator);
         mouthslot.AddMember("attachment", "rest", allocator);
-
-    Value mouthslots(kArrayType);
-    mouthslots.PushBack(mouthslot, allocator);
 
 
      if(!this->spineData.HasMember("slots"))
+     {
+         Value mouthslots(kArrayType);
+         mouthslots.PushBack(mouthslot, allocator);
+
         this->spineData.AddMember("slots", mouthslots, allocator);//TODO make array
+     }
      else
-         this->spineData["slots"].PushBack(mouthslots, allocator);
+         this->spineData["slots"].PushBack(mouthslot, allocator);
 
 
 
@@ -208,6 +209,9 @@ QString SpineDoc::JsonExport()
      Document::AllocatorType& allocator = this->spineData.GetAllocator();
      QString    word,   nextWord;
 
+      string animName = voice->fName.toStdString();
+      qDebug()<<"Set name to "<<animName.c_str();
+
      int startFrame = 0;
      int endFrame = 1;
      int        fps = 30;
@@ -222,6 +226,7 @@ QString SpineDoc::JsonExport()
      Value events(kObjectType);
      Value animEvents(kArrayType);
 
+
      for (int frame = startFrame; frame <= endFrame; frame++)
      {
         nextWord = voice->GetWordAtFrame(frame);
@@ -232,7 +237,11 @@ QString SpineDoc::JsonExport()
             //add event to events list
             word = nextWord;
             Value empty(kObjectType);
-            events.AddMember(Value(word.toStdString().c_str(), allocator).Move(), empty, allocator);
+
+            if(this->spineData.HasMember("events"))
+                this->spineData["events"].AddMember(Value(word.toStdString().c_str(), allocator).Move(), empty, allocator);
+            else
+                events.AddMember(Value(word.toStdString().c_str(), allocator).Move(), empty, allocator);
 
             //add event to keyframes
             Value keyFrame(kObjectType);
@@ -242,7 +251,8 @@ QString SpineDoc::JsonExport()
         }
      }
 
-    this->spineData.AddMember("events", events, allocator);
+     if(!this->spineData.HasMember("events"))
+        this->spineData.AddMember("events", events, allocator);
 
 
     Value animation(kObjectType);
@@ -250,20 +260,20 @@ QString SpineDoc::JsonExport()
 
     if(this->spineData.HasMember("animations"))
     {
-        if(this->spineData["animations"].HasMember("animation"))
+        if(this->spineData["animations"].HasMember(animName.c_str()))
         {
-            this->spineData["animations"]["animation"].AddMember("events", animEvents, allocator);
+            this->spineData["animations"][animName.c_str()].AddMember("events", animEvents, allocator);
         }
         else
         {
-            animations.AddMember("animation", animation, allocator);
-            this->spineData["animations"].AddMember("animation", animation, allocator);
+            animations.AddMember( Value(animName.c_str(), allocator).Move(), animation, allocator);
+            this->spineData["animations"].AddMember(Value(animName.c_str(), allocator).Move(), animation, allocator);
         }
     }
     else
     {
         animation.AddMember("events", animEvents, allocator);
-        animations.AddMember("animation", animation, allocator);
+        animations.AddMember(Value(animName.c_str(), allocator).Move(), animation, allocator);
         this->spineData.AddMember("animations", animations, allocator);
     }
  }
@@ -271,6 +281,7 @@ QString SpineDoc::JsonExport()
 /**-----------------------------------------------------------------------------------*/
  /**
   * @brief SpineDoc::AddAnimations - adds all voice animation events
+  * @param voice - the voice we want to add to the animation
   */
  void SpineDoc::AddAnimations(LipsyncVoice* voice)
  {   
@@ -282,7 +293,8 @@ QString SpineDoc::JsonExport()
      int fps = 30;
      double time = 0.0f;
      phoneme = voice->GetPhonemeAtFrame(0);
-
+     string animName = voice->fName.toStdString();
+     qDebug()<<"Set Animation name to "<<animName.c_str();
      if (voice->fPhrases.size() > 0)
      {
          startFrame = voice->fPhrases[0]->fStartFrame;
@@ -321,19 +333,19 @@ QString SpineDoc::JsonExport()
 
     if(this->spineData.HasMember("animations"))
     {
-        if(this->spineData["animations"].HasMember("animation"))
+        if(this->spineData["animations"].HasMember(animName.c_str()))
         {
-            if(this->spineData["animations"]["animation"].HasMember("slots"))
+            if(this->spineData["animations"][animName.c_str()].HasMember("slots"))
             {
                 mouthShape.AddMember("attachment", attachment, allocator);
-                this->spineData["animations"]["animation"]["slots"].AddMember("MouthShape", mouthShape, allocator);
+                this->spineData["animations"][animName.c_str()]["slots"].AddMember("MouthShape", mouthShape, allocator);
             }
             else
             {
                 mouthShape.AddMember("attachment", attachment, allocator);
                 slot.AddMember("MouthShape", mouthShape, allocator);
 
-                this->spineData["animations"]["animation"].AddMember("slots", slot, allocator);//NOTE change
+                this->spineData["animations"][animName.c_str()].AddMember("slots", slot, allocator);//NOTE change
             }
         }
         else
@@ -342,7 +354,7 @@ QString SpineDoc::JsonExport()
             slot.AddMember("MouthShape", mouthShape, allocator);
             animation.AddMember("slots", slot, allocator);
 
-            this->spineData["animations"].AddMember("animation", animation, allocator);
+            this->spineData["animations"].AddMember(Value(animName.c_str(), allocator).Move(), animation, allocator);
         }
 
     }
@@ -351,7 +363,7 @@ QString SpineDoc::JsonExport()
         mouthShape.AddMember("attachment", attachment, allocator);
         slot.AddMember("MouthShape", mouthShape, allocator);
         animation.AddMember("slots", slot, allocator);
-        animations.AddMember("animation", animation, allocator);
+        animations.AddMember(Value(animName.c_str(), allocator).Move(), animation, allocator);
         this->spineData.AddMember("animations", animations, allocator);
     }
  }
@@ -379,149 +391,65 @@ void SpineDoc::Export(QString filename)
 }
 
 /**-----------------------------------------------------------------------------------*/
-/*
- void LipsyncVoice::ExportSpine(QString path)
- {
-     QFile	f(path);
+
+/**
+ * @brief SpineDoc::GetModel creates a standard item model that cen be used with a tree view to represent the bonse structure of the file
+ * @return QStandardModel - a model representing the bone structure
+ */
+QStandardItemModel* SpineDoc::GetModel()
+{
+    QStandardItemModel* model = new QStandardItemModel();
+    if(!this->spineData.HasMember("bones") || !this->spineData["bones"].IsArray())
+        return model;
 
 
-     if (!f.open(QIODevice::WriteOnly | QIODevice::Text))
-         return;
+    int length = this->spineData["bones"].Size();
 
-     QTextStream out(&f);
-
-     //useful variables
-     int        fps = 30;
-     int		startFrame = 0;
-     int		endFrame = 1;
-     int        width = 200;
-     int        height = 200;
-     QString hash("KebD3MyURSyaMpyRinWkDQEAuYk");        //@TODO: make hash compute form phoneme/frame numbers
-     double time = 0.0;
-     QString	phoneme, nextPhoneme;
-     QString    word,   nextWord;
-     //get the start and end frames
-     if (fPhrases.size() > 0)
-     {
-         startFrame = fPhrases[0]->fStartFrame;
-         endFrame = fPhrases.last()->fEndFrame;
-     }
-
-
-    QString skeleton = "\"skeleton\": {\n\t\"hash\": \"";
-    skeleton.append(hash);
-    skeleton.append("\",\n\t\"spine\": \"2.1.27\",\n");
-    skeleton.append(QString("\t\"width\": %1,\n").arg(width));
-    skeleton.append(QString("\t\"height\": %1,\n},\n").arg(height));
-
-    //create bones
-    QString bones = "\"bones\": [\n\t{ \"name\": \"root\" }\n],\n";
-    //create slots
-    QString slot = "\"slots\": [\n\t{ \"name\": \"Mouthshape\", \"bone\": \"root\", \"attachment\": \"rest\" }\n],\n";
-    //create skins
-    QString skins = "\"skins\": {\n\t\"default\": {\n\t\t\"Mouthshape\": {\n";
-        skins.append(QString("\t\t\t\"AI\": { \"width\":%1").arg(width));
-        skins.append(QString(" , \"height\": %1 },\n").arg(height));
-
-        skins.append(QString("\t\t\t\"E\": { \"width\":%1").arg(width));
-        skins.append(QString(" , \"height\": %1 },\n").arg(height));
-
-        skins.append(QString("\t\t\t\"FV\": { \"width\":%1").arg(width));
-        skins.append(QString(" , \"height\": %1 },\n").arg(height));
-
-        skins.append(QString("\t\t\t\"L\": { \"width\":%1").arg(width));
-        skins.append(QString(" , \"height\": %1 },\n").arg(height));
-
-        skins.append(QString("\t\t\t\"MBP\": { \"width\":%1").arg(width));
-        skins.append(QString(" , \"height\": %1 },\n").arg(height));
-
-        skins.append(QString("\t\t\t\"O\": { \"width\":%1").arg(width));
-        skins.append(QString(" , \"height\": %1 },\n").arg(height));
-
-        skins.append(QString("\t\t\t\"U\": { \"width\":%1").arg(width));
-        skins.append(QString(" , \"height\": %1 },\n").arg(height));
-
-        skins.append(QString("\t\t\t\"WQ\": { \"width\":%1").arg(width));
-        skins.append(QString(" , \"height\": %1 },\n").arg(height));
-
-        skins.append(QString("\t\t\t\"etc\": { \"width\":%1").arg(width));
-        skins.append(QString(" , \"height\": %1 },\n").arg(height));
-
-        skins.append(QString("\t\t\t\"rest\": { \"width\":%1").arg(width));
-        skins.append(QString(" , \"height\": %1 },\n").arg(height));
-
-    skins.append("\t\t}\n\t}\n},\n");
-    //create animations
-    QString animations = "\"animations\": {\n\t\"animation\": {\n\t\t\"slots\": {\n\t\t\t\"Mouthshape\": {\n\t\t\t\t\"attachment\": [\n";
-    QString events = "\"events\":{\n";
-    QString animEvents = "\t\t\"events\":[\n";
-    if (startFrame > 1)
+    QStandardItem *rootItem = model->invisibleRootItem();
+    QStandardItem *parentItem;
+    for(int i = 0; i < length; i++)
     {
-        phoneme = "rest";
-        out << 1 << ' ' << "rest" << endl;
-    }
+        QStandardItem* item = new QStandardItem(QString(this->spineData["bones"][i]["name"].GetString()));
 
-    for (int frame = startFrame; frame <= endFrame; frame++)
-    {
-        nextPhoneme = GetPhonemeAtFrame(frame);
-        nextWord = GetWordAtFrame(frame);
-        time = (double)(frame)/(double)fps;
-
-        //if there is a new word, add it to the events and the animations lists
-        if(nextWord != word)
+        if((this->spineData["bones"][i].HasMember("parent")))
         {
-            word = nextWord;
-            //add word to events list
-            events.append("\t\"");
-            events.append(word);
-            events.append("\":{},\n");
-
-            //add event to animaitons list
-            animEvents.append(QString("\t\t\t{\"time\":%1").arg(time, 0, 'g', 5));
-            animEvents.append(",\"name\":\"");
-            animEvents.append(word);
-            animEvents.append("\"},\n");
+            parentItem = this->_FindBoneInItem(rootItem, QString(this->spineData["bones"][i]["parent"].GetString()));
+            parentItem->appendRow(item);
+        }
+        else
+        {
+            rootItem->appendRow(item);
         }
 
-        //if there is a new phoneme, add it
-        if (nextPhoneme != phoneme)
-        {
-            if (phoneme == "rest")
-            { // export an extra "rest" phoneme at the end of a pause between words or phrases
-                animations.append("\t\t\t\t\t{ \"time\": ");
-                animations.append(QString("%1").arg(time, 0, 'g', 5));
-                animations.append(", \"name\": \"");
-                animations.append(phoneme);
-                animations.append("\" },\n");
-
-            }
-            phoneme = nextPhoneme;
-
-            animations.append("\t\t\t\t\t{ \"time\": ");
-            animations.append(QString("%1").arg(time, 0, 'g', 5));
-            animations.append(", \"name\": \"");
-            animations.append(phoneme);
-            animations.append("\" },\n");
-        }
     }
-    animEvents.append("\t\t]\n");
-    animations.append("\t\t\t\t]\n\t\t\t}\n\t\t},\n");
-    animations.append(animEvents);
-    animations.append("\t}\n}");
-    events.append("},\n");
-    //write to file
+    return model;
+}
 
-    out<<"{\n";
-    out<<skeleton;
-    out<<bones;
-    out<<slot;
-    out<<skins;
-    out<<events;
-    out<<animations;
-    out<<"\n}";
+/**
+ * @brief SpineDoc::_FindBoneInItem Finds a particular item by name in a tree of items
+ * @param root - the root item
+ * @param text - the neam of the item we want to find
+ * @return  QStandardItem - the item with that name or NULL if that item was not found
+ */
+QStandardItem* SpineDoc::_FindBoneInItem(QStandardItem* root, QString text)
+{
 
- }
+    QStandardItem* ret;
+    for(int i = 0; i < root->rowCount(); i++)
+    {
+        //check if item is a match
+        if(root->child(i)->text() == text)
+            return root->child(i);
 
+        //else search children
+         ret =  _FindBoneInItem(root->child(i), text);
+        if(ret != NULL)
+            return ret;
 
+    }
+    return NULL;
 
-   */
+}
+
+/**-----------------------------------------------------------------------------------*/
+

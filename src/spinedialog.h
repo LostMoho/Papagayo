@@ -28,7 +28,6 @@ private:
     Ui::SpineDialog *ui;
     SpineDoc* spineDoc;
     LipsyncDoc* doc;
-    void GenerateBoneTree();
 
 
 public slots:
