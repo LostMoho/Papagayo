@@ -19,11 +19,11 @@ The current voice name will be used as the name for the animation in the spine J
 
 A dialog will appear with export settings:
 
-	Open JSON - This allows you to open an existing Spine JSON file that will populate the tree view with the bones from that skeleton. You can then select a bone from the treeview to attach the mouth animations to. 
+- Open JSON - This allows you to open an existing Spine JSON file that will populate the tree view with the bones from that skeleton. You can then select a bone from the treeview to attach the mouth animations to. 
 
-	Image Dimensions - By default, Papagayo uses 200 x 200 images. If you are using custom images, you can specify their size here. 
+- Image Dimensions - By default, Papagayo uses 200 x 200 images. If you are using custom images, you can specify their size here. 
 
-	Export words as events - Spine does not support the playback of sound, so checking this will export all words as Spine events so it is easier to see what is being said. 
+- Export words as events - Spine does not support the playback of sound, so checking this will export all words as Spine events so it is easier to see what is being said. 
 
 Click OK and choose the name of your export file. 
 
