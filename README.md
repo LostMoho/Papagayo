@@ -34,26 +34,24 @@ To use custom mouth shapes simply name your mouth shapes as their phonemes(AI, E
 Building
 ------------------------------------------------------------
 To build Papagayo:
-Mac: 
-1)Open up the file Papagayo.pro in Qt Creator and press the Build
-Project button.
+
+Mac:
+
+  1)Open up the file Papagayo.pro in Qt Creator and press the Build Project button.
 
 Windows: 
-1) Open up the file Papagayo.pro in Qt Creator
-2) In the .pro file, update the location of the libsnd .dll with the path on your machine. 
-3) Press the Build Project button. 
-4) Copy /libsndfile_1.0.25/Win32/bin/libsnd-1.dll into the build output directory. 
-5) Open a terminal at the build output directory and run 'windeployqt Papagayo.exe'. (More info here: http://doc.qt.io/qt-5/windows-deployment.html#the-windows-deployment-tool)
 
-Papagayo is currently in active development, so please check back for newer versions.
+  1) Open up the file Papagayo.pro in Qt Creator
 
-The current version of Papagayo can always be found here:
-
-http://www.lostmarble.com/papagayo/index.shtml
+  2) In the .pro file, update the location of the libsnd .dll with the path on your machine. 
 
 
+  3) Press the Build Project button. 
+
+  4) Copy /libsndfile_1.0.25/Win32/bin/libsnd-1.dll into the build output directory. 
+
+  5) Open a terminal at the build output directory and run 'windeployqt Papagayo.exe'. (More info here: http://doc.qt.io/qt-5/windows-deployment.html#the-windows-deployment-tool)
 
 
 
-Mike Clifton
-July 8, 2014
+
