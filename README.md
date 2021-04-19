@@ -1,7 +1,7 @@
 Papagayo with Spine Export
 ========
 
-Lipsync tool for animators
+Lipsync tool for animators with the ability to export to the Spine animation software
 
 Papagayo 2.0b1 with Spine Export
 ------------------------------------------------------------
