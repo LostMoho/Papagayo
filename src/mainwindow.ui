@@ -689,9 +689,9 @@
   </connection>
   <connection>
    <sender>voiceList</sender>
-   <signal>itemClicked(QListWidgetItem*)</signal>
+   <signal>currentItemChanged(QListWidgetItem*,QListWidgetItem*)</signal>
    <receiver>MainWindow</receiver>
-   <slot>onVoiceSelected(QListWidgetItem*)</slot>
+   <slot>onVoiceSelected(QListWidgetItem*,QListWidgetItem*)</slot>
    <hints>
     <hint type="sourcelabel">
      <x>704</x>

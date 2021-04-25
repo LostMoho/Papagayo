@@ -71,7 +71,7 @@ void MainWindow::OpenFile(QString filePath)
 		fDoc->GetAudioPlayer()->setNotifyInterval(17); // 60 fps
 		connect(fDoc->GetAudioPlayer(), SIGNAL(positionChanged(qint64)), ui->waveformView, SLOT(positionChanged(qint64)));
 
-		RebuildVoiceList();
+		buildVoiceList();
 		if (fDoc->fCurrentVoice)
 		{
 			ui->voiceName->setText(fDoc->fCurrentVoice->fName);
@@ -269,7 +269,7 @@ void MainWindow::onFileOpen()
 	QSettings settings;
 	QString filePath = QFileDialog::getOpenFileName(this,
 													tr("Open"), settings.value("default_dir", "").toString(),
-													tr("Papgayo and Audio files (*.pgo;*.wav;*.aif;*.aiff)"));
+													tr("Papgayo and Audio files (*.pgo *.wav *.aif *.aiff)"));
 	if (filePath.isEmpty())
 		return;
 
@@ -363,12 +363,11 @@ void MainWindow::onNewVoice()
 	newVoiceName += QString::number(fDoc->fVoices.size() + 1);
 	fDoc->fCurrentVoice = new LipsyncVoice(newVoiceName);
 	fDoc->fVoices << fDoc->fCurrentVoice;
-	RebuildVoiceList();
-	if (fDoc->fCurrentVoice)
-	{
-		ui->voiceName->setText(fDoc->fCurrentVoice->fName);
-		ui->voiceText->setPlainText(fDoc->fCurrentVoice->fText);
-	}
+	QListWidgetItem *item = new QListWidgetItem(fDoc->fCurrentVoice->fName);
+	item->setFlags(item->flags() | Qt::ItemIsEditable);
+	ui->voiceList->addItem(item);
+	ui->voiceList->setCurrentItem(item);
+	onVoiceSelected(item, 0);
 }
 
 void MainWindow::onDeleteVoice()
@@ -379,23 +378,18 @@ void MainWindow::onDeleteVoice()
 	int id = fDoc->fVoices.indexOf(fDoc->fCurrentVoice);
 	fDoc->fVoices.removeAt(id);
 	delete fDoc->fCurrentVoice;
+	delete ui->voiceList->item(id);
 	if (id > 0)
 		id--;
 	fDoc->fCurrentVoice = fDoc->fVoices[id];
-	RebuildVoiceList();
-	if (fDoc->fCurrentVoice)
-	{
-		ui->voiceName->setText(fDoc->fCurrentVoice->fName);
-		fEnableAutoBreakdown = false;
-		ui->voiceText->setPlainText(fDoc->fCurrentVoice->fText);
-		fEnableAutoBreakdown = true;
-	}
-	updateActions();
+	QListWidgetItem *item = ui->voiceList->item(id);
+	ui->voiceList->setCurrentItem(item);
+	onVoiceSelected(item, 0);
 }
 
-void MainWindow::onVoiceSelected(QListWidgetItem *item)
+void MainWindow::onVoiceSelected(QListWidgetItem *item, QListWidgetItem*)
 {
-	if (fRebuildingList || !fDoc)
+	if (!fDoc)
 		return;
 
 	int id = ui->voiceList->row(item);
@@ -416,14 +410,14 @@ void MainWindow::onVoiceSelected(QListWidgetItem *item)
 
 void MainWindow::onVoiceItemChanged(QListWidgetItem *item)
 {
-	if (fRebuildingList || !fDoc)
+	if (!fDoc)
 		return;
 
 	int id = ui->voiceList->row(item);
 	if (id >= 0 && id < fDoc->fVoices.size())
 	{
 		fDoc->fCurrentVoice = fDoc->fVoices[id];
-		if (fDoc->fCurrentVoice)
+		if (fDoc->fCurrentVoice && fDoc->fCurrentVoice->fName != item->text())
 		{
 			fDoc->fCurrentVoice->fName = item->text();
 			ui->voiceName->setText(fDoc->fCurrentVoice->fName);
@@ -436,8 +430,9 @@ void MainWindow::onVoiceNameChanged()
 	if (!fDoc || !fDoc->fCurrentVoice)
 		return;
 
-	fDoc->fCurrentVoice->fName = ui->voiceName->text();
-	RebuildVoiceList();
+	QString name(ui->voiceName->text());
+	fDoc->fCurrentVoice->fName = name;
+	ui->voiceList->currentItem()->setText(name);
 }
 
 void MainWindow::onVoiceTextChanged()
@@ -490,25 +485,20 @@ void MainWindow::onExport()
 	fDoc->fCurrentVoice->Export(filePath);
 }
 
-void MainWindow::RebuildVoiceList()
+void MainWindow::buildVoiceList()
 {
-	if (fRebuildingList)
-		return;
-
-	fRebuildingList = true;
 	ui->voiceList->clear();
 	if (fDoc)
 	{
 		for (int i = 0; i < fDoc->fVoices.size(); i++)
 		{
-			ui->voiceList->addItem(fDoc->fVoices[i]->fName);
-			QListWidgetItem *item = ui->voiceList->item(i);
+			QListWidgetItem *item = new QListWidgetItem(fDoc->fVoices[i]->fName);
 			item->setFlags(item->flags() | Qt::ItemIsEditable);
+			ui->voiceList->addItem(item);
 		}
 		if (fDoc->fCurrentVoice)
 		{
 			ui->voiceList->setCurrentItem(ui->voiceList->item(fDoc->fVoices.indexOf(fDoc->fCurrentVoice)));
 		}
 	}
-	fRebuildingList = false;
 }
