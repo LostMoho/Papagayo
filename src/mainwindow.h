@@ -43,7 +43,7 @@ private slots:
 	void onFpsChange(QString text);
 	void onNewVoice();
 	void onDeleteVoice();
-	void onVoiceSelected(QListWidgetItem *item);
+	void onVoiceSelected(QListWidgetItem *item, QListWidgetItem* previous);
 	void onVoiceItemChanged(QListWidgetItem *item);
 	void onVoiceNameChanged();
 	void onVoiceTextChanged();
@@ -51,11 +51,10 @@ private slots:
 	void onExport();
 
 private:
-	void RebuildVoiceList();
+	void buildVoiceList();
 
 	LipsyncDoc			*fDoc;
 	bool				fEnableAutoBreakdown;
-	bool				fRebuildingList;
 	int					fDefaultFps;
 
 	Ui::MainWindow *ui;
