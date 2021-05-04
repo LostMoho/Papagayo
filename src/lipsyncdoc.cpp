@@ -286,6 +286,8 @@ void LipsyncVoice::Export(QString path)
 	out << endFrame + 2 << ' ' << "rest" << endl;
 }
 
+
+
 void LipsyncVoice::RunBreakdown(QString language, int32 audioDuration)
 {
 	// make sure there is a space after all punctuation marks
@@ -479,6 +481,35 @@ QString LipsyncVoice::GetPhonemeAtFrame(int32 frame)
 	return "rest";
 }
 
+
+/**
+ * @brief LipsyncVoice::GetPhonemeAtFrame Get's the word that is associated with a specific frame
+ * @param frame
+ * @return
+ */
+QString LipsyncVoice::GetWordAtFrame(int32 frame)
+{
+    for (int32 i = 0; i < fPhrases.size(); i++)
+    {
+        LipsyncPhrase *phrase = fPhrases[i];
+        if (frame >= phrase->fStartFrame && frame <= phrase->fEndFrame)
+        { // we found the phrase that contains this frame
+            for (int32 j = 0; j < phrase->fWords.size(); j++)
+            {
+                LipsyncWord *word = phrase->fWords[j];
+                if (frame >= word->fStartFrame && frame <= word->fEndFrame)
+                { // we found the word that contains this frame
+                   return word->fText;
+                }
+            }
+        }
+    }
+
+    return "";
+}
+
+
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 QList<QString>				LipsyncDoc::Phonemes;
@@ -629,7 +660,7 @@ void LipsyncDoc::Open(const QString &path)
 	}
 	fAudioPath = tempPath;
 
-	fFps = in.readLine().toInt();
+    fFps = in.readLine().toInt();
 	fFps = PG_CLAMP(fFps, 1, 120);
 	fAudioDuration = in.readLine().toInt();
 

@@ -18,13 +18,16 @@ SOURCES += src/main.cpp \
     src/waveformview.cpp \
     src/mouthview.cpp \
     src/audioextractor.cpp \
-    src/breakdowndialog.cpp
+    src/breakdowndialog.cpp \
+    src/spinedialog.cpp \
+    src/spinedoc.cpp
 
 INCLUDEPATH += src
 
 win32 {
 
-INCLUDEPATH += libsndfile_1.0.25/Win32/include
+INCLUDEPATH += libsndfile_1.0.25/Win32/include \
+                rapidjson
 
 LIBS += -LC:\Users\mclifton\Documents\QtDevelopment\Papagayo\libsndfile_1.0.25\Win32\lib -llibsndfile-1
 #LIBS += -Llibsndfile_1.0.25\Win32\lib -llibsndfile-1
@@ -132,10 +135,42 @@ HEADERS += src/mainwindow.h \
     src/audioextractor.h \
     src/mouthview.h \
     src/pg_config.h \
-    src/breakdowndialog.h
+    src/breakdowndialog.h \
+    src/spinedialog.h \
+    rapidjson/allocators.h \
+    rapidjson/document.h \
+    rapidjson/encodedstream.h \
+    rapidjson/encodings.h \
+    rapidjson/filereadstream.h \
+    rapidjson/filewritestream.h \
+    rapidjson/memorybuffer.h \
+    rapidjson/memorystream.h \
+    rapidjson/pointer.h \
+    rapidjson/prettywriter.h \
+    rapidjson/rapidjson.h \
+    rapidjson/reader.h \
+    rapidjson/stringbuffer.h \
+    rapidjson/writer.h \
+    rapidjson/error/en.h \
+    rapidjson/error/error.h \
+    rapidjson/internal/biginteger.h \
+    rapidjson/internal/diyfp.h \
+    rapidjson/internal/dtoa.h \
+    rapidjson/internal/ieee754.h \
+    rapidjson/internal/itoa.h \
+    rapidjson/internal/meta.h \
+    rapidjson/internal/pow10.h \
+    rapidjson/internal/stack.h \
+    rapidjson/internal/strfunc.h \
+    rapidjson/internal/strtod.h \
+    rapidjson/internal/swap.h \
+    rapidjson/msinttypes/inttypes.h \
+    rapidjson/msinttypes/stdint.h \
+    src/spinedoc.h
 
 FORMS += src/mainwindow.ui \
-    src/breakdowndialog.ui
+    src/breakdowndialog.ui \
+    src/spinedialog.ui
 
 OTHER_FILES += \
     ToDo.txt

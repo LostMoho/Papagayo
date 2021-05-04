@@ -149,6 +149,9 @@
            </item>
            <item>
             <widget class="QComboBox" name="exportChoice">
+             <property name="editable">
+              <bool>false</bool>
+             </property>
              <item>
               <property name="text">
                <string>Anime Studio</string>

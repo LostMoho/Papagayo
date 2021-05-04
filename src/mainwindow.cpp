@@ -2,6 +2,7 @@
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "spinedialog.h"
 
 MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent),
@@ -17,6 +18,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	ui->waveformView->SetScrollArea(ui->scrollArea);
 	ui->fpsEdit->setValidator(new QIntValidator(1, 120));
+
+    ui->exportChoice->addItem("Spine");
 
 	connect(ui->actionZoomIn, SIGNAL(triggered()), ui->waveformView, SLOT(onZoomIn()));
 	connect(ui->actionZoomOut, SIGNAL(triggered()), ui->waveformView, SLOT(onZoomOut()));
@@ -267,7 +270,7 @@ void MainWindow::onFileOpen()
 		return;
 
 	QSettings settings;
-	QString filePath = QFileDialog::getOpenFileName(this,
+    QString filePath = QFileDialog::getOpenFileName(this,
 													tr("Open"), settings.value("default_dir", "").toString(),
 													tr("Papgayo and Audio files (*.pgo;*.wav;*.aif;*.aiff)"));
 	if (filePath.isEmpty())
@@ -471,23 +474,56 @@ void MainWindow::onBreakdown()
 
 void MainWindow::onExport()
 {
-	if (!fDoc || !fDoc->fCurrentVoice)
-		return;
+    if(ui->exportChoice->currentText() == "Anime Studio")
+        exportAnimeStudio();
+    else if(ui->exportChoice->currentText() == "Spine")
+        exportSpine();
 
-	QSettings settings;
-	QString name = fDoc->fCurrentVoice->fName + tr(".dat");
-	QDir dir(settings.value("default_dir", "").toString());
-	name = dir.absoluteFilePath(name);
-	QString filePath = QFileDialog::getSaveFileName(this,
-													tr("Export"), name,
-													tr("DAT files (*.dat)"));
-	if (filePath.isEmpty())
-		return;
+}
 
-	QFileInfo info(filePath);
-	settings.setValue("default_dir", info.dir().absolutePath());
+/**
+ * @brief MainWindow::ExportAnimeStudio
+ * Exports Anime studio format
+ */
+void MainWindow::exportAnimeStudio()
+{
 
-	fDoc->fCurrentVoice->Export(filePath);
+    if (!fDoc || !fDoc->fCurrentVoice)
+        return;
+
+    QSettings settings;
+    QString name = fDoc->fCurrentVoice->fName + tr(".dat");
+    QDir dir(settings.value("default_dir", "").toString());
+    name = dir.absoluteFilePath(name);
+    QString filePath = QFileDialog::getSaveFileName(this,
+                                                    tr("Export"), name,
+                                                    tr("DAT files (*.dat)"));
+    if (filePath.isEmpty())
+        return;
+
+    QFileInfo info(filePath);
+    settings.setValue("default_dir", info.dir().absolutePath());
+
+    fDoc->fCurrentVoice->Export(filePath);
+
+
+}
+
+
+/**
+ * @brief MainWindow::ExportSpine
+ * Exports spine json file.
+ */
+void MainWindow::exportSpine()
+{
+
+    if (!fDoc || !fDoc->fCurrentVoice)
+        return;
+
+    SpineDialog *dlog = new SpineDialog(fDoc, this);
+    dlog->exec() ;
+    delete dlog;
+
 }
 
 void MainWindow::RebuildVoiceList()
